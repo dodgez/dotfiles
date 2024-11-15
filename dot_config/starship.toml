@@ -3,11 +3,6 @@ add_newline = false
 [[battery.display]]
 threshold = 20
 
-[character]
-success_symbol = "[>](bold green)"
-error_symbol = "[x](bold red)"
-vicmd_symbol = "[<](bold green)"
-
 [aws]
 symbol = "aws "
 
@@ -16,6 +11,11 @@ symbol = "bun "
 
 [c]
 symbol = "C "
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[x](bold red)"
+vicmd_symbol = "[<](bold green)"
 
 [cobol]
 symbol = "cobol "
@@ -71,6 +71,9 @@ symbol = "go "
 
 [hg_branch]
 symbol = "hg "
+
+[hostname]
+ssh_symbol = "ssh "
 
 [java]
 symbol = "java "

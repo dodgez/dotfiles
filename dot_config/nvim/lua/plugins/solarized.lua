@@ -1,3 +1,5 @@
+if true then return {} end -- WARN: theme breaks in one of my envs
+
 ---@type LazySpec
 return {
   'maxmx03/solarized.nvim',
