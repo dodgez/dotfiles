@@ -10,6 +10,9 @@ return {
   priority = 10000, -- load AstroCore first
   ---@type AstroCoreOpts
   opts = {
+    features = {
+      notifications = false,
+    },
     mappings = {
       n = {
         ["s"] = { function() require("hop").hint_char1() end, desc = "Hop hint char1" },
