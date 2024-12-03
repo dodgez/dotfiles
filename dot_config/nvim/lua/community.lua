@@ -7,7 +7,6 @@ return {
   "AstroNvim/astrocommunity",
   -- import/override with your plugins folder
   { import = "astrocommunity.color.transparent-nvim" },
-  { import = "astrocommunity.diagnostics.error-lens-nvim" },
   { import = "astrocommunity.diagnostics.lsp_lines-nvim" },
   { import = "astrocommunity.fuzzy-finder.fzf-lua" },
   { import = "astrocommunity.git.neogit" },
