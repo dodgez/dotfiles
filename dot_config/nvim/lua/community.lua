@@ -10,6 +10,7 @@ return {
   { import = "astrocommunity.diagnostics.lsp_lines-nvim" },
   { import = "astrocommunity.fuzzy-finder.fzf-lua" },
   { import = "astrocommunity.git.neogit" },
+  { import = "astrocommunity.lsp.lsp-inlayhints-nvim" },
   { import = "astrocommunity.motion.hop-nvim" },
   { import = "astrocommunity.pack.astro" },
   { import = "astrocommunity.pack.chezmoi" },
