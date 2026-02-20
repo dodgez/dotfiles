@@ -61,6 +61,20 @@
 (use-package vertico
   :init (vertico-mode))
 
+(savehist-mode 1)
+(setq savehist-additional-variables
+      '(search-ring regexp-search-ring file-name-history))
+(setq history-length 1000)
+
+(use-package prescient
+  :config
+  (prescient-persist-mode 1))
+
+(use-package vertico-prescient
+  :after '(vertico prescient)
+  :config
+  (vertico-prescient-mode 1))
+
 (use-package orderless
   :init
   (setq completion-styles '(orderless basic)))
@@ -72,12 +86,13 @@
 ;; Consult
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package consult
-  :bind (("C-x b" . consult-buffer)
-         ("M-y"   . consult-yank-pop)
-         ("C-s"   . consult-line)
-	 ("C-c r" . consult-ripgrep)
-	 ("C-c i" . consult-imenu)))
+(use-package consult)
+
+(use-package recentf
+  :custom
+  (recentf-max-saved-items 200)
+  :config
+  (recentf-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Corfu
@@ -91,7 +106,8 @@
   (corfu-cycle t)
   :config
   (define-key corfu-map (kbd "TAB") #'corfu-next)
-  (define-key corfu-map (kbd "<backtab>") #'corfu-previous))
+  (define-key corfu-map (
+			 kbd "<backtab>") #'corfu-previous))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Discoverability
@@ -115,8 +131,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq treesit-language-source-alist
-      '((typescript "https://github.com/tree-sitter/tree-sitter-typescript" "typescript/src")
-        (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" "tsx/src")
+      '((typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
+        (tsx        "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
         (javascript "https://github.com/tree-sitter/tree-sitter-javascript")))
 
 (defun my/ensure-treesit-grammars ()
@@ -149,10 +165,12 @@
   :hook (lsp-mode . lsp-ui-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Inline diagnostics (modern default)
+;; Flycheck
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq flymake-show-diagnostics-at-end-of-line t)
+(use-package flycheck
+  :config
+  (global-flycheck-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Formatting (optional prettier)
@@ -170,6 +188,10 @@
   :config
   (general-evil-setup t)
 
+  (general-define-key
+   :states '(normal visual)
+   "g c" '(comment-dwim :wk "comment dwim"))
+
   (general-create-definer my/leader
     :states '(normal visual emacs)
     :keymaps 'override
@@ -182,6 +204,7 @@
 
     "b"  '(:ignore t :wk "buffers")
     "bb" '(consult-buffer :wk "switch buffer")
+    "br" '((lambda () (interactive) (revert-buffer nil t)) :wk "revert buffer")
 
     "e"  '(:ignore t :wk "eval")
     "ec" '((lambda () (interactive) (load-file user-init-file)) :wk "reload config")
@@ -190,6 +213,8 @@
     "f"  '(:ignore t :wk "files")
     "fc" '((lambda () (interactive) (find-file user-init-file)) :wk "edit init.el")
     "ff" '(find-file :wk "find file")
+    "fr" '(consult-recent-file :wk "recent file")
+    "fs" '(save-buffer :wk "save file")
 
     "g"  '(:ignore t :wk "git")
     "gs" '(magit-status :wk "status")
@@ -206,7 +231,16 @@
 
     "s"  '(:ignore t :wk "search")
     "s/" '(consult-line :wk "search line")
-    "sg" '(consult-ripgrep :wk "ripgrep")))
+    "sg" '(consult-ripgrep :wk "ripgrep")
+
+    "w" '(:ignore t :wk "window")
+    "wh" '(evil-window-left :wk "go left a window")
+    "wj" '(evil-window-down :wk "go down a window")
+    "wk" '(evil-window-up :wk "go up a window")
+    "wl" '(evil-window-right :wk "go right a window")
+    "wq" '(evil-quit :wk "quit window")
+    "ws" '(evil-window-split :wk "split window")
+    "wv" '(evil-window-vsplit :wk "vertically split window")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Doom modeline
@@ -246,15 +280,21 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold (* 2 1000 1000))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(consult corfu doom-modeline doom-themes evil-collection evil-mouse
-	     evil-terminal-cursor-changer general lsp-ui magit
-	     marginalia orderless prettier undo-fu vertico)))
+   '(consult corfu doom-modeline doom-themes evil-collection
+	     evil-terminal-cursor-changer flycheck general lsp-ui
+	     magit marginalia orderless prescient prettier undo-fu
+	     vertico vertico-posframe vertico-prescient)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
